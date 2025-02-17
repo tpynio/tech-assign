@@ -1,6 +1,9 @@
 from core.database.base import Base
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
+from core.database.mixins import PlainPkId, Timestamps
+from core.database.models.user import User
+import uuid
 
 
 OrderTypes: list[str] = [
@@ -10,22 +13,31 @@ OrderTypes: list[str] = [
 ]
 
 
-class OrderType(Base):
+class OrderType(PlainPkId, Base):
     __tablename__ = "order_types"
     name: Mapped[str] = mapped_column(String(16), unique=True)
 
 
-class Order(Base):
+class Order(PlainPkId, Timestamps, Base):
     __tablename__ = "orders"
 
     name: Mapped[str] = mapped_column(String(64))
     type_id: Mapped[int] = mapped_column(ForeignKey("order_types.id"))
     type: Mapped["OrderType"] = relationship(
-        "Type", back_populates="orders", lazy="joined"  # autojoin while get order
+        "Type",
+        back_populates="orders",
+        lazy="joined",  # autojoin while get order
     )
     weight: Mapped[int] = mapped_column(Integer)
     price: Mapped[int] = mapped_column(Integer)
     deliver_id: Mapped[int] = mapped_column(Integer)
+
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="orders",
+        lazy="joined",
+    )
 
     @validates("weight")
     def weight_validator(self, key, weight_value):

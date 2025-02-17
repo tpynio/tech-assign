@@ -1,18 +1,18 @@
 import logging
 import uvicorn
 
-from app.main_router import app
+from app.main_router import main_router
 from core.config import settings
 
 __all__ = (
-    "app",
+    "main_router",
     "main",
 )
 
 
 def main():
     uvicorn.run(
-        "main:app",
+        "main:main_router",
         log_level=logging.getLevelName(settings.LOG_LEVEL),
         host=settings.HOST,
         port=settings.PORT,

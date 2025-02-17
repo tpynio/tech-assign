@@ -1,12 +1,1 @@
 Generic single-database configuration with an async dbapi.
-
-# генерация новой миграции по коду в core.modules
-alembic revision --autogenerate -m "Initial revision"
-# накат миграций в базу
-alembic upgrade head
-# накат определенной миграции xxxxxxxxx
-alembic upgrade xxxxxxxxx
-# откат миграции на предыдущую
-alembic downgrade -1
-# откат на определенную миграцию xxxxxxxxx
-alembic downgrade xxxxxxxxx

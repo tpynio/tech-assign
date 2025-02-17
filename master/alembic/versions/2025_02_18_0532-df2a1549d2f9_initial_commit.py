@@ -1,8 +1,8 @@
-"""Initial revision
+"""Initial commit
 
-Revision ID: c8c749cddb5a
+Revision ID: df2a1549d2f9
 Revises:
-Create Date: 2025-02-17 23:02:22.188514
+Create Date: 2025-02-18 05:32:06.514613
 
 """
 
@@ -13,16 +13,16 @@ import sqlalchemy as sa
 from core.database.models.order import OrderTypes
 
 
-def fill_order_types():
-    order_types = ",".join(map(lambda elem: f'("{elem}")', OrderTypes))
-    op.execute(sa.text(f"INSERT INTO order_types (name) VALUES {order_types}"))
-
-
 # revision identifiers, used by Alembic.
-revision: str = "c8c749cddb5a"
+revision: str = "df2a1549d2f9"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
+
+def fill_order_types():
+    types = ",".join(map(lambda x: f"('{x}')", OrderTypes))
+    op.execute(sa.text(f"INSERT INTO order_types (name) VALUES {types}"))
 
 
 def upgrade() -> None:
@@ -31,25 +31,19 @@ def upgrade() -> None:
         "order_types",
         sa.Column("name", sa.String(length=16), nullable=False),
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column(
-            "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
-        sa.Column(
-            "updated_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("name"),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_order_types")),
+        sa.UniqueConstraint("name", name=op.f("uq_order_types_name")),
     )
     op.create_table(
         "users",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("id", sa.BINARY(length=16), nullable=False),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
         sa.Column(
             "updated_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_users")),
     )
     op.create_table(
         "orders",
@@ -58,6 +52,7 @@ def upgrade() -> None:
         sa.Column("weight", sa.Integer(), nullable=False),
         sa.Column("price", sa.Integer(), nullable=False),
         sa.Column("deliver_id", sa.Integer(), nullable=False),
+        sa.Column("user_id", sa.BINARY(length=16), nullable=False),
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
@@ -66,10 +61,12 @@ def upgrade() -> None:
             "updated_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
         sa.ForeignKeyConstraint(
-            ["type_id"],
-            ["order_types.id"],
+            ["type_id"], ["order_types.id"], name=op.f("fk_orders_type_id_order_types")
         ),
-        sa.PrimaryKeyConstraint("id"),
+        sa.ForeignKeyConstraint(
+            ["user_id"], ["users.id"], name=op.f("fk_orders_user_id_users")
+        ),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_orders")),
     )
     fill_order_types()
     # ### end Alembic commands ###

@@ -5,19 +5,19 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from core.config import settings
 from alembic import context
-
-from core.database.base import Base, DATABASE_URL
+from core.database.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+config.set_main_option("sqlalchemy.url", settings.MYSQL_ADDR)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
