@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     PORT: int = 8000
     RELOAD: bool = False
 
+    MYSQL_ADDR: str = "mysql+asyncmy://user:password@localhost:3307/database"
+
 
 ENV_FILE_IF_USED = getenv("USE_ENV_CONFIG") or getenv("ENV_FILE", ".env.local")
 settings = Settings(_env_file=ENV_FILE_IF_USED)
