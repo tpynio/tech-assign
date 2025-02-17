@@ -1,9 +1,6 @@
 #pipenv
 Pipfile.lock
 
-# Intelliji
-.idea/
-
 # vscode
 .vscode/
 
