@@ -4,10 +4,14 @@ from typing import Literal
 
 
 class RegisterOrderParams(BaseModel):
-    name: str = Field(..., description="Наименование посылки")
-    weight: int = Field(..., description="Вес посылки")
-    type: Literal[*OrderTypes] = Field(..., description="Тип посылки")
-    price: int = Field(..., description="Стоимость посылки")
+    name: str = Field(..., description="Наименование посылки", examples=["socks"])
+    weight: float = Field(..., description="Вес посылки, в кг", examples=[0.5, 1.2])
+    type: Literal[*OrderTypes] = Field(
+        ..., description="Тип посылки", examples=["Clothes"]
+    )
+    price: float = Field(
+        ..., description="Стоимость посылки, в долларах", examples=[1.99, 1]
+    )
 
     @field_validator("weight")
     @classmethod
@@ -37,3 +41,8 @@ class RegisterOrderResponse(BaseModel):
     order_id: int = Field(
         example="1",
     )
+
+
+class OrderType(BaseModel):
+    id: int
+    name: str

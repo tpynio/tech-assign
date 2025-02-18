@@ -10,7 +10,7 @@ class PlainPkId:
 
 
 class UUIDPkId:
-    id: Mapped[uuid.UUID] = mapped_column(
+    id: Mapped[uuid.UUID.hex] = mapped_column(
         BINARY(16), primary_key=True, default=lambda: uuid.uuid4().bytes
     )
 

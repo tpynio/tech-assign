@@ -1,50 +1,59 @@
-from typing import Any
-import uuid
-from time import time
-from fastapi import APIRouter, HTTPException, status, Response, Request
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, HTTPException, status, Response, Request, Depends
 from core.config import settings
+from app.routers.session.schemas.session import SessionResponse
+from app.routers.session.crud.session import create_session, get_session, del_session
+from core.database.dbHelper import db
+
 
 router = APIRouter(
     tags=["Session"],
 )
 
-COOKIES: dict[str, dict[str, Any]] = {}
 
-
-def generate_session_id() -> str:
-    return uuid.uuid4().hex
-
-
-@router.post("/session/")
-async def create_session(response: Response):
-    session_id = generate_session_id()
-    response.set_cookie(settings.COOKIE_SESSION_ID_KEY_NAME, session_id)
-    COOKIES[session_id] = {"user": session_id, "loginAt": int(time())}
-    return {"result": "ok"}
-
-
-@router.get("/session/")
-async def whoami(
+@router.post(
+    "/session/",
+    response_model=SessionResponse,
+)
+async def make_session(
     request: Request,
+    response: Response,
+    db_session: AsyncSession = Depends(db.get_session),
 ):
     session_id = request.cookies.get(settings.COOKIE_SESSION_ID_KEY_NAME)
-    if session_id not in COOKIES:
+    new_session_id = await create_session(db_session=db_session, session_id=session_id)
+    response.set_cookie(settings.COOKIE_SESSION_ID_KEY_NAME, new_session_id)
+    return {"result": new_session_id}
+
+
+@router.get(
+    "/session/",
+    response_model=SessionResponse,
+)
+async def whoami(
+    request: Request,
+    db_session: AsyncSession = Depends(db.get_session),
+):
+    session_id = request.cookies.get(settings.COOKIE_SESSION_ID_KEY_NAME)
+    check_session_id = await get_session(db_session=db_session, session_id=session_id)
+
+    if not check_session_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="not authenticated"
         )
-    return COOKIES[session_id]
+    return {"result": check_session_id}
 
 
-@router.delete("/session/")
+@router.delete(
+    "/session/",
+    response_model=SessionResponse,
+)
 async def delete_session(
     request: Request,
     response: Response,
+    db_session: AsyncSession = Depends(db.get_session),
 ):
     session_id = request.cookies.get(settings.COOKIE_SESSION_ID_KEY_NAME)
-    if session_id not in COOKIES:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="not authenticated"
-        )
-    COOKIES.pop(session_id)
+    await del_session(db_session=db_session, session_id=session_id)
     response.delete_cookie(settings.COOKIE_SESSION_ID_KEY_NAME)
-    return {"result": "success"}
+    return {"result": None}

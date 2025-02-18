@@ -1,9 +1,14 @@
 import logging
-from fastapi import APIRouter, Request, Depends, HTTPException, status
-from core.config import settings
-from app.routers.order.schemas.order import RegisterOrderParams, RegisterOrderResponse
-from core.dependecies.authUser import prefetch_auth_user
-from core.database.models.user import User
+from fastapi import APIRouter, Depends
+from app.routers.order.schemas.order import (
+    RegisterOrderParams,
+    RegisterOrderResponse,
+    OrderType,
+)
+from core.dependecies.authUser import get_or_make_auth_user
+from core.database import User, Order
+from core.database.dbHelper import db
+from app.routers.order.crud.order import create_order, order_types
 
 
 log = logging.getLogger(__name__)
@@ -12,25 +17,29 @@ router = APIRouter(
 )
 
 
+@router.get(
+    "/order_types/",
+    response_model=list[OrderType],
+)
+async def get_order_types(db_session=Depends(db.get_session)):
+    types = await order_types(db_session=db_session)
+
+    return types
+
+
 @router.post(
-    "/register",
+    "/register/",
     response_model=RegisterOrderResponse,
 )
 async def register_order(
-    request: Request,
     order: RegisterOrderParams,
+    db_session=Depends(db.get_session),
+    user: User = Depends(get_or_make_auth_user),
 ):
-    session_id = request.cookies.get(settings.COOKIE_SESSION_ID_KEY_NAME)
-    if not session_id:
-        log.error("User session_id is missing")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="not authenticated"
-        )
-    response = RegisterOrderResponse(order_id=777)
+    order: Order = await create_order(
+        db_session=db_session,
+        user=user,
+        params=order,
+    )
+    response = RegisterOrderResponse(order_id=order.id)
     return response
-
-
-@router.post("/test")
-async def test_order(user: User = Depends(prefetch_auth_user)):
-    print(f"WTF {user}")
-    return {"message": f"{user.dict()}"}

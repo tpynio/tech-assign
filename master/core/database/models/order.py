@@ -23,19 +23,17 @@ class Order(PlainPkId, Timestamps, Base):
 
     name: Mapped[str] = mapped_column(String(64))
     type_id: Mapped[int] = mapped_column(ForeignKey("order_types.id"))
-    type: Mapped["OrderType"] = relationship(
-        "Type",
-        back_populates="orders",
+    order_type: Mapped["OrderType"] = relationship(
+        "OrderType",
         lazy="joined",  # autojoin while get order
     )
     weight: Mapped[int] = mapped_column(Integer)
     price: Mapped[int] = mapped_column(Integer)
     deliver_id: Mapped[int] = mapped_column(Integer)
 
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[uuid.UUID.hex] = mapped_column(ForeignKey("users.id"))
     user: Mapped["User"] = relationship(
         "User",
-        back_populates="orders",
         lazy="joined",
     )
 

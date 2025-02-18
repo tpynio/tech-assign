@@ -1,1 +1,4 @@
 Generic single-database configuration with an async dbapi.
+#alembic upgrade head
+#alembic downgrade base
+#alembic revision --autogenerate -m "Initial commit"
