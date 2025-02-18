@@ -47,6 +47,7 @@ async def register_order(
         weight=order.weight / 1000,
         price=order.price / 100,
         type=order.order_type.name,
+        delivery_price=order.delivery_price if order.delivery_price else "Не расчитано",
     )
     return response
 
@@ -72,5 +73,6 @@ async def get_order(
         weight=order.weight / 1000,
         price=order.price / 100,
         type=order.order_type.name,
+        delivery_price=order.delivery_price if order.delivery_price else "Не расчитано",
     )
     return response

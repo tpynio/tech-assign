@@ -41,7 +41,7 @@ class RegisterOrderParams(Order):
 
 class OrderResponse(Order):
     order_id: int = Field(..., description="id заказа пользователя")
-    delivery_price: float | None = Field(
+    delivery_price: float | str = Field(
         None, description="Расчитанная стоимость доставки, в рублях", examples=[120.45]
     )
 
