@@ -1,5 +1,5 @@
 from core.database.base import Base
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
 from core.database.mixins import PlainPkId, Timestamps
 from core.database.models.user import User
@@ -35,6 +35,10 @@ class Order(PlainPkId, Timestamps, Base):
     user: Mapped["User"] = relationship(
         "User",
         lazy="joined",
+    )
+    delivery_price: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
     )
 
     @validates("weight")

@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 
 
-class RegisterOrderParams(BaseModel):
+class Order(BaseModel):
     name: str = Field(..., description="Наименование посылки", examples=["socks"])
     weight: float = Field(..., description="Вес посылки, в кг", examples=[0.5, 1.2])
     type: Literal[*OrderTypes] = Field(
@@ -13,6 +13,8 @@ class RegisterOrderParams(BaseModel):
         ..., description="Стоимость посылки, в долларах", examples=[1.99, 1]
     )
 
+
+class RegisterOrderParams(Order):
     @field_validator("weight")
     @classmethod
     def weight_validator(cls, weight_value: int):
@@ -37,9 +39,10 @@ class RegisterOrderParams(BaseModel):
         return type_value
 
 
-class RegisterOrderResponse(BaseModel):
-    order_id: int = Field(
-        example="1",
+class OrderResponse(Order):
+    order_id: int = Field(..., description="id заказа пользователя")
+    delivery_price: float | None = Field(
+        None, description="Расчитанная стоимость доставки, в рублях", examples=[120.45]
     )
 
 

@@ -1,9 +1,14 @@
 from sqlalchemy import select
+from sqlalchemy.engine import Result
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import User, Order, OrderType
 from core.database.models.order import OrderTypes
 from app.routers.order.schemas.order import RegisterOrderParams
 from typing import Sequence
+import logging
+
+log = logging.getLogger(__name__)
 
 
 async def create_order(
@@ -22,12 +27,29 @@ async def create_order(
         deliver_id=0,
     )
     db_session.add(order)
-    await db_session.commit()
+    try:
+        await db_session.commit()
+        await db_session.refresh(order)
+    except SQLAlchemyError as exc:
+        log.error("Database error", exc_info=exc)
 
     return order
 
 
 async def order_types(db_session: AsyncSession) -> Sequence[OrderType]:
     stmt = select(OrderType).order_by(OrderType.id)
-    result = await db_session.scalars(stmt)
-    return result.all()
+    result: Result = await db_session.execute(stmt)
+    return result.scalars().all()
+
+
+async def get_order(
+    db_session: AsyncSession,
+    user: User,
+    order_id: int,
+) -> Order | None:
+    stmt = select(Order).where(
+        Order.id == order_id,
+        Order.user_id == user.id,
+    )
+    result: Result = await db_session.execute(stmt)
+    return result.scalar_one_or_none()
