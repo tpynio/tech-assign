@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.dialects.mysql import BINARY
-from sqlalchemy import Integer, func
+from sqlalchemy import Integer, func, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 
@@ -10,7 +10,7 @@ class PlainPkId:
 
 
 class UUIDPkId:
-    id: Mapped[uuid.UUID.hex] = mapped_column(
+    id: Mapped[UUID] = mapped_column(
         BINARY(16), primary_key=True, default=lambda: uuid.uuid4().bytes
     )
 

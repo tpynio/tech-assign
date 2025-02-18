@@ -1,9 +1,11 @@
+import uuid
+
 from core.database.base import Base
-from sqlalchemy import Integer, String, ForeignKey, Float
+from sqlalchemy import Integer, String, ForeignKey, Float, UUID
+from sqlalchemy.dialects.mysql import BINARY
 from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
 from core.database.mixins import PlainPkId, Timestamps
 from core.database.models.user import User
-import uuid
 
 
 OrderTypes: list[str] = [
@@ -16,6 +18,12 @@ OrderTypes: list[str] = [
 class OrderType(PlainPkId, Base):
     __tablename__ = "order_types"
     name: Mapped[str] = mapped_column(String(16), unique=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+        }
 
 
 class Order(PlainPkId, Timestamps, Base):
@@ -31,7 +39,7 @@ class Order(PlainPkId, Timestamps, Base):
     price: Mapped[int] = mapped_column(Integer)
     deliver_id: Mapped[int] = mapped_column(Integer)
 
-    user_id: Mapped[uuid.UUID.hex] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[UUID] = mapped_column(BINARY(16), ForeignKey("users.id"))
     user: Mapped["User"] = relationship(
         "User",
         lazy="joined",
@@ -40,6 +48,18 @@ class Order(PlainPkId, Timestamps, Base):
         Float,
         nullable=True,
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "type_id": self.type_id,
+            "user_id": uuid.UUID(bytes=self.user_id),
+            "weight": self.weight,
+            "price": self.price,
+            "deliver_id": self.deliver_id,
+            "delivery_price": self.delivery_price,
+        }
 
     @validates("weight")
     def weight_validator(self, key, weight_value):

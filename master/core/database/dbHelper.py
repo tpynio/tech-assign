@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -6,6 +8,9 @@ from sqlalchemy.ext.asyncio import (
 )
 from core.config import settings
 from typing import AsyncGenerator
+
+
+log = logging.getLogger(__name__)
 
 
 class DatabaseHelper:
@@ -17,6 +22,7 @@ class DatabaseHelper:
         max_overflow: int = 15,
         pool_size: int = 5,
     ):
+        log.info("Connecting to %s", url)
         self.engine: AsyncEngine = create_async_engine(
             url=url,
             echo=echo,
@@ -30,6 +36,7 @@ class DatabaseHelper:
 
     async def dispose(self):
         await self.engine.dispose()
+        log.info("Database connections is closes")
 
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         async with self.async_session_maker() as session:

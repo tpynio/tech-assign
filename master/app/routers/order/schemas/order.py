@@ -1,6 +1,16 @@
 from core.database.models.order import OrderTypes
 from pydantic import BaseModel, Field, field_validator
 from typing import Literal
+from fastapi_pagination import Page
+
+
+class Pagination(BaseModel):
+    limit: int = Field(10, description="Максимальное количество сущностей в ответе")
+    offset: int = Field(0, description="Сдвиг")
+
+
+class Filter(Pagination):
+    pass
 
 
 class Order(BaseModel):
@@ -49,3 +59,7 @@ class OrderResponse(Order):
 class OrderType(BaseModel):
     id: int
     name: str
+
+
+class OrdersPaginateResponse(Page):
+    items: list[OrderResponse]

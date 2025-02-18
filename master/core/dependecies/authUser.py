@@ -1,15 +1,26 @@
-from fastapi import Depends, Request, Response
+import logging
+
+from fastapi import Depends, Request, Response, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
 from core.database.dbHelper import db
 from core.database.models.user import User
 from core.config import settings
 import uuid
 
+log = logging.getLogger(__name__)
+
 
 async def create_user(db_session: AsyncSession, response: Response) -> User:
     user = User()
     db_session.add(user)
-    await db_session.commit()
+    try:
+        await db_session.commit()
+        await db_session.refresh(user)
+    except SQLAlchemyError as exc:
+        log.error("Database error", exc_info=exc)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     response.set_cookie(
         settings.COOKIE_SESSION_ID_KEY_NAME, uuid.UUID(bytes=user.id).hex
     )
@@ -29,6 +40,7 @@ async def get_or_make_auth_user(
     :return: новый или тотже пользователь
     """
     session_id = request.cookies.get(settings.COOKIE_SESSION_ID_KEY_NAME)
+
     if not session_id:
         user = await create_user(db_session, response)
 

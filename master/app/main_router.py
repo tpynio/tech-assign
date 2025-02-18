@@ -9,14 +9,13 @@ from contextlib import asynccontextmanager
 from app import __version__
 from core.database.dbHelper import db
 
+
 log = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup
     yield
-    log.info("Database is going to be disposed")
     await db.dispose()
 
 
