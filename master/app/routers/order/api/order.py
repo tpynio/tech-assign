@@ -1,5 +1,5 @@
+from core.logger import init_logger
 import logging
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.routers.order.schemas.order import (
     RegisterOrderParams,
@@ -15,7 +15,7 @@ from fastapi_pagination import Params as PaginationParams
 from app.routers.order.schemas.order import FilterParams
 
 
-log = logging.getLogger(__name__)
+log = init_logger(__name__)
 router = APIRouter(
     tags=["Orders"],
 )
@@ -41,6 +41,7 @@ async def register_order(
     db_session=Depends(db.get_session),
     user: User = Depends(get_or_make_auth_user),
 ):
+
     # https://docs.python.org/3/howto/logging.html#optimization
     if log.isEnabledFor(logging.DEBUG):
         log.debug("register_order params %r for user %s", order_params, user.to_dict())

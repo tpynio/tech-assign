@@ -1,4 +1,4 @@
-import logging
+from core.logger import init_logger
 
 from fastapi.responses import UJSONResponse
 from core.config import settings
@@ -10,7 +10,7 @@ from app import __version__
 from core.database.dbHelper import db
 
 
-log = logging.getLogger(__name__)
+log = init_logger(__name__)
 
 
 @asynccontextmanager

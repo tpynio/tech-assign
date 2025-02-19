@@ -1,5 +1,4 @@
-import logging
-
+from core.logger import init_logger
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
@@ -10,7 +9,7 @@ from core.config import settings
 from typing import AsyncGenerator
 
 
-log = logging.getLogger(__name__)
+log = init_logger(__name__)
 
 
 class DatabaseHelper:
@@ -45,7 +44,7 @@ class DatabaseHelper:
 
 
 db = DatabaseHelper(
-    url=settings.MYSQL_ADDR,
+    url=settings.MYSQL_URL,
     echo=settings.ECHO,
     echo_pool=settings.ECHO,
     max_overflow=settings.MAX_OVERFLOW,

@@ -1,4 +1,4 @@
-import logging
+from core.logger import init_logger
 
 from fastapi import Depends, Request, Response, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +8,7 @@ from core.database.models.user import User
 from core.config import settings
 import uuid
 
-log = logging.getLogger(__name__)
+log = init_logger(__name__)
 
 
 async def create_user(db_session: AsyncSession, response: Response) -> User:

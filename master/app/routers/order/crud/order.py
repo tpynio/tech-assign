@@ -8,9 +8,9 @@ from app.routers.order.schemas.order import RegisterOrderParams, FilterParams
 from typing import Sequence
 from fastapi_pagination import Page, Params as PaginationParams
 from fastapi_pagination.ext.sqlalchemy import paginate
-import logging
+from core.logger import init_logger
 
-log = logging.getLogger(__name__)
+log = init_logger(__name__)
 
 
 async def create_order(
