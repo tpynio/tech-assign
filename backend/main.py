@@ -1,5 +1,5 @@
 import uvicorn
-from app.main_router import main_router
+from app.mainRouter import main_router
 from core.logger import init_logger
 from core.config import settings
 

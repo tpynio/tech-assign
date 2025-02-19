@@ -34,3 +34,6 @@ __pycache__/
 
 # Secure
 backend/.env
+
+#Celery
+backend/celerybeat*

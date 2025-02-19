@@ -3,7 +3,7 @@
 if [ "$APPLY_MIGRATION" = 1 ] ; then
     alembic upgrade head
 elif [ "$CELERY_BEAT" = 1 ] ; then
-    celery -A periodic.celerybeat_schedule beat --loglevel=info
+    celery -A periodic.celerybeatSchedule beat --loglevel=info
 elif [ "$CELERY_WORKER" = 1 ] ; then
     celery -A periodic.tasks worker --loglevel=info
 else
