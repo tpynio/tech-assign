@@ -31,3 +31,6 @@ cover/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Secure
+master/.env

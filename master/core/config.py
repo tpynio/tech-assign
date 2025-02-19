@@ -29,5 +29,5 @@ class Settings(BaseSettings):
     COOKIE_SESSION_ID_KEY_NAME: str = "session_id"
 
 
-ENV_FILE_IF_USED = getenv("USE_ENV_CONFIG") or getenv("ENV_FILE", ".env.local")
+ENV_FILE_IF_USED = getenv("USE_ENV_CONFIG") or getenv("ENV_FILE", ".env")
 settings = Settings(_env_file=ENV_FILE_IF_USED)

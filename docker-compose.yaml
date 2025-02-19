@@ -1,0 +1,46 @@
+services:
+  mysql_db:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: techassign_root
+      MYSQL_DATABASE: techassign
+      MYSQL_USER: techassign
+      MYSQL_PASSWORD: techassign
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  app-migration:
+    build:
+      dockerfile: docker-build/main_app/Dockerfile
+      context: ./
+    environment:
+      APP_MYSQL_ADDR: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
+      APP_ECHO: False
+      APPLY_MIGRATION: 1
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+
+  app:
+    build:
+      dockerfile: docker-build/main_app/Dockerfile
+      context: ./
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      APP_LOG_LEVEL: INFO
+      APP_MYSQL_ADDR: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
+      APP_ECHO: False
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+      app-migration:
+        condition: service_completed_successfully
