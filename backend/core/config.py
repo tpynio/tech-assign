@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     ECHO: bool = False
     MAX_OVERFLOW: int = 10
     POOL_SIZE: int = 10
+    BATCH_SIZE: int = 15
 
     # DB Redis settings
     REDIS_URL: str = "redis://localhost:6379"
