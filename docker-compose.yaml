@@ -1,6 +1,12 @@
+x-build: &common-build
+  build:
+    dockerfile: docker-build/main_app/Dockerfile
+    context: ./
+
+
 services:
   mysql_db:
-    image: mysql
+    image: mysql:9.2.0
     restart: always
     ports:
       - "3306:3306"
@@ -11,16 +17,26 @@ services:
       MYSQL_PASSWORD: techassign
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
+      interval: 15s
+      timeout: 5s
       retries: 3
 
+  redis_db:
+    image: redis:7.4.2
+    restart: always
+    ports:
+      - "6378:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+
   app-migration:
-    build:
-      dockerfile: docker-build/main_app/Dockerfile
-      context: ./
+    <<: *common-build
     environment:
-      APP_MYSQL_ADDR: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
+      APP_MYSQL_URL: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
       APP_ECHO: False
       APPLY_MIGRATION: 1
     depends_on:
@@ -28,18 +44,46 @@ services:
         condition: service_healthy
 
   app:
-    build:
-      dockerfile: docker-build/main_app/Dockerfile
-      context: ./
+    <<: *common-build
     environment:
       APP_HOST: 0.0.0.0
       APP_PORT: 8000
       APP_LOG_LEVEL: INFO
-      APP_MYSQL_ADDR: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
+      APP_REDIS_URL: redis://redis_db:6379
+      APP_MYSQL_URL: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
       APP_ECHO: False
     ports:
       - "8000:8000"
     depends_on:
+      redis_db:
+        condition: service_healthy
+      mysql_db:
+        condition: service_healthy
+      app-migration:
+        condition: service_completed_successfully
+
+
+  app-celery-beat:
+    <<: *common-build
+    environment:
+      CELERY_BEAT: 1
+      APP_LOG_LEVEL: INFO
+      APP_REDIS_URL: redis://redis_db:6379
+    depends_on:
+      redis_db:
+        condition: service_healthy
+
+  app-celery-worker:
+    <<: *common-build
+    environment:
+      CELERY_WORKER: 1
+      APP_REDIS_URL: redis://redis_db:6379
+      APP_LOG_LEVEL: INFO
+      APP_MYSQL_URL: mysql+asyncmy://techassign:techassign@mysql_db:3306/techassign
+      APP_ECHO: False
+    depends_on:
+      redis_db:
+        condition: service_healthy
       mysql_db:
         condition: service_healthy
       app-migration:
