@@ -7,7 +7,7 @@ class Settings(BaseSettings):
         env_prefix = "APP_"
 
     # Swagger settings
-    TITLE: str = "Tech-assign master backend"
+    TITLE: str = "Tech-assign backend"
     OPENAPI_PREFIX: str = ""
     ROOT_PATH: str = ""
 
@@ -27,7 +27,10 @@ class Settings(BaseSettings):
     POOL_SIZE: int = 10
 
     # DB Redis settings
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_URL: str = "redis://localhost:6379"
+    REDIS_LOCK_PREFIX: str = "lock_prefix"
+    REDIS_KEY_PREFIX: str = "key_prefix"
+    REDIS_EXPIRE: int = 86400
 
     # AUTH settings
     COOKIE_SESSION_ID_KEY_NAME: str = "session_id"

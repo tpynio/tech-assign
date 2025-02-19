@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$/master" />
-    <content url="file://$MODULE_DIR$/secondary" />
+    <content url="file://$MODULE_DIR$/backend" />
+    <content url="file://$MODULE_DIR$/frontend" />
     <orderEntry type="jdk" jdkName="Python 3.13 (tech-assign)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

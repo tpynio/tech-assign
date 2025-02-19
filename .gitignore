@@ -33,4 +33,4 @@ __pycache__/
 *$py.class
 
 # Secure
-master/.env
+backend/.env
