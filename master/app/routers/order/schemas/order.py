@@ -2,15 +2,16 @@ from core.database.models.order import OrderTypes
 from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 from fastapi_pagination import Page
+from typing import Optional
 
 
-class Pagination(BaseModel):
-    limit: int = Field(10, description="Максимальное количество сущностей в ответе")
-    offset: int = Field(0, description="Сдвиг")
-
-
-class Filter(Pagination):
-    pass
+class FilterParams(BaseModel):
+    filterByType: Optional[Literal[*OrderTypes]] = Field(
+        None, description="Фильтрация по типу"
+    )
+    deliveryPriceIsNull: Optional[bool] = Field(
+        None, description="Фильтрация по наличию расчитанной стоимости"
+    )
 
 
 class Order(BaseModel):

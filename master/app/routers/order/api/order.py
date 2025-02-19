@@ -12,6 +12,7 @@ from core.database import User, Order
 from core.database.dbHelper import db
 import app.routers.order.crud.order as crud
 from fastapi_pagination import Params as PaginationParams
+from app.routers.order.schemas.order import FilterParams
 
 
 log = logging.getLogger(__name__)
@@ -56,7 +57,9 @@ async def register_order(
         weight=order.weight / 1000,
         price=order.price / 100,
         type=order.order_type.name,
-        delivery_price=order.delivery_price if order.delivery_price else "Не расчитано",
+        delivery_price=(
+            order.delivery_price / 100 if order.delivery_price else "Не расчитано"
+        ),
     )
     return response
 
@@ -65,17 +68,24 @@ async def register_order(
     "/list/",
 )
 async def get_order_list(
-    params: PaginationParams = Depends(),
+    pagination_params: PaginationParams = Depends(),
+    filter_params: FilterParams = Depends(),
     db_session=Depends(db.get_session),
     user: User = Depends(get_or_make_auth_user),
 ):
     if log.isEnabledFor(logging.DEBUG):
-        log.debug("params %r for user %r", params, user.to_dict())
+        log.debug(
+            "pagination_params %r filter_params %r for user %r",
+            pagination_params,
+            filter_params,
+            user.to_dict(),
+        )
     order_list = dict(
         await crud.get_order_list_paginate(
             db_session=db_session,
             user=user,
-            params=params,
+            pagination_params=pagination_params,
+            filter_params=filter_params,
         )
     )
     prepare_dict = {}
@@ -88,7 +98,7 @@ async def get_order_list(
                     weight=item[2] / 1000,
                     price=item[3] / 100,
                     type=item[4],
-                    delivery_price=item[5] if item[5] else "Не расчитано",
+                    delivery_price=item[5] / 100 if item[5] else "Не расчитано",
                 )
                 for item in v
             ]
@@ -124,6 +134,8 @@ async def get_order(
         weight=order.weight / 1000,
         price=order.price / 100,
         type=order.order_type.name,
-        delivery_price=order.delivery_price if order.delivery_price else "Не расчитано",
+        delivery_price=(
+            order.delivery_price / 100 if order.delivery_price else "Не расчитано"
+        ),
     )
     return response

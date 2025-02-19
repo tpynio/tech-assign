@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import User, Order, OrderType
 from core.database.models.order import OrderTypes
-from app.routers.order.schemas.order import RegisterOrderParams, Filter
+from app.routers.order.schemas.order import RegisterOrderParams, FilterParams
 from typing import Sequence
 from fastapi_pagination import Page, Params as PaginationParams
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -60,7 +60,7 @@ async def get_order(
 async def get_order_list(
     db_session: AsyncSession,
     user: User,
-    params: Filter,
+    params: FilterParams,
 ) -> Sequence[Order]:
     stmt = (
         select(Order)
@@ -80,14 +80,24 @@ async def get_order_list(
 async def get_order_list_paginate(
     db_session: AsyncSession,
     user: User,
-    params: PaginationParams,
+    pagination_params: PaginationParams,
+    filter_params: FilterParams,
 ) -> Page:
+    filters = [
+        Order.user_id == user.id,
+        Order.type_id == OrderType.id,
+    ]
+    if filter_params.deliveryPriceIsNull is not None:
+        if filter_params.deliveryPriceIsNull:
+            filters.append(Order.delivery_price.is_(None))
+        else:
+            filters.append(Order.delivery_price.is_not(None))
+    if filter_params.filterByType:
+        filters.append(OrderType.name == filter_params.filterByType)
+
     query = (
         select(Order, OrderType)
-        .where(
-            Order.user_id == user.id,
-            Order.type_id == OrderType.id,
-        )
+        .where(*filters)
         .with_only_columns(
             Order.id,
             Order.name,
@@ -98,4 +108,4 @@ async def get_order_list_paginate(
             Order.deliver_id,
         )
     )
-    return await paginate(db_session, query, params)
+    return await paginate(db_session, query, pagination_params)

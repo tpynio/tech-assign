@@ -1,7 +1,7 @@
 import uuid
 
 from core.database.base import Base
-from sqlalchemy import Integer, String, ForeignKey, Float, UUID
+from sqlalchemy import Integer, String, ForeignKey, UUID
 from sqlalchemy.dialects.mysql import BINARY
 from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
 from core.database.mixins import PlainPkId, Timestamps
@@ -44,8 +44,8 @@ class Order(PlainPkId, Timestamps, Base):
         "User",
         lazy="joined",
     )
-    delivery_price: Mapped[float | None] = mapped_column(
-        Float,
+    delivery_price: Mapped[int | None] = mapped_column(
+        Integer,
         nullable=True,
     )
 
