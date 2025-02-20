@@ -39,7 +39,9 @@ class Order(PlainPkId, Timestamps, Base):
     price: Mapped[int] = mapped_column(Integer)
     deliver_id: Mapped[int] = mapped_column(Integer)
 
-    user_id: Mapped[UUID] = mapped_column(BINARY(16), ForeignKey("users.id"))
+    user_id: Mapped[UUID] = mapped_column(
+        BINARY(16), ForeignKey("users.id", ondelete="CASCADE")
+    )
     user: Mapped["User"] = relationship(
         "User",
         lazy="joined",
