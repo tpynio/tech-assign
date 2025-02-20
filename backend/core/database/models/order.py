@@ -36,7 +36,9 @@ class Order(PlainPkId, Timestamps, Base):
     )
     weight: Mapped[int] = mapped_column(Integer)
     price: Mapped[int] = mapped_column(Integer)
-    deliver_id: Mapped[int] = mapped_column(Integer)
+    deliver_id: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, server_default=None
+    )
 
     user_id: Mapped[UUID] = mapped_column(
         BINARY(16), ForeignKey("users.id", ondelete="CASCADE")
