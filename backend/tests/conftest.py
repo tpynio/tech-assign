@@ -80,7 +80,7 @@ async def order_dummies_factory(auth_user, async_session):
             weight: int,
             delivery_price: int | None,
             order_type: OrderTypes,
-            deliver_id: int = 0,
+            delivery_id: int = None,
         ):
             order_type = await async_session.get(
                 OrderType, OrderTypes.index(order_type) + 1
@@ -92,7 +92,7 @@ async def order_dummies_factory(auth_user, async_session):
                 order_type=order_type,
                 user=auth_user,
                 delivery_price=delivery_price,
-                deliver_id=deliver_id,
+                deliver_id=delivery_id,
             )
             async_session.add(order)
             await async_session.commit()

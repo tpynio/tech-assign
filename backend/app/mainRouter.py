@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from app import __version__
+from app.routers.binding.api.binding import router as binding_router
 from app.routers.order.api.order import router as order_router
 from app.routers.periodic.api.periodic import router as periodic_router
 from app.routers.service.schemas.service import PingResponse
@@ -42,6 +43,11 @@ async def ping():
 main_router.include_router(
     order_router,
     prefix="/api/order",
+)
+
+main_router.include_router(
+    binding_router,
+    prefix="/api/binding",
 )
 
 main_router.include_router(

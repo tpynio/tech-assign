@@ -31,7 +31,7 @@ async def create_order(
         weight=params.weight * 1000,  # перевод в граммы
         price=params.price * 100,  # перевод в центы
         order_type=order_type,
-        deliver_id=0,
+        deliver_id=None,
     )
     db_session.add(order)
     try:
