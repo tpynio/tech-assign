@@ -1,12 +1,11 @@
 import uuid
 
 from core.database.base import Base
-from sqlalchemy import Integer, String, ForeignKey, UUID
-from sqlalchemy.dialects.mysql import BINARY
-from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
 from core.database.mixins import PlainPkId, Timestamps
 from core.database.models.user import User
-
+from sqlalchemy import UUID, ForeignKey, Integer, String
+from sqlalchemy.dialects.mysql import BINARY
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 OrderTypes: list[str] = [
     "Clothes",

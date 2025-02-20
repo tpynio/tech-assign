@@ -1,8 +1,9 @@
-from core.logger import init_logger
-import aiohttp
 from typing import Dict
-from core.database.redisHelper import redis_storage
+
+import aiohttp
 from core.config import settings
+from core.database.redisHelper import redis_storage
+from core.logger import init_logger
 
 log = init_logger(__name__)
 

@@ -8,10 +8,9 @@ Create Date: 2025-02-18 05:32:06.514613
 
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from core.database.models.order import OrderTypes
-
 
 # revision identifiers, used by Alembic.
 revision: str = "df2a1549d2f9"

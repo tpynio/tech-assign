@@ -1,7 +1,7 @@
-from core.database.base import Base
-
-from core.database.mixins import UUIDPkId, Timestamps
 import uuid
+
+from core.database.base import Base
+from core.database.mixins import Timestamps, UUIDPkId
 
 
 class User(UUIDPkId, Timestamps, Base):

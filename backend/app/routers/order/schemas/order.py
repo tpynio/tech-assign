@@ -1,8 +1,8 @@
+from typing import Literal, Optional
+
 from core.database.models.order import OrderTypes
-from pydantic import BaseModel, Field, field_validator
-from typing import Literal
 from fastapi_pagination import Page
-from typing import Optional
+from pydantic import BaseModel, Field, field_validator
 
 
 class FilterParams(BaseModel):

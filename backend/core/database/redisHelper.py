@@ -1,9 +1,9 @@
+from enum import IntEnum
 from typing import Dict
 
+from core.config import settings
 from redis.asyncio import Redis
 from redis.asyncio.lock import Lock
-from enum import IntEnum
-from core.config import settings
 
 
 class RedisDatabase(IntEnum):

@@ -1,17 +1,16 @@
+import asyncio
 import uuid
-
-from fastapi.testclient import TestClient
-from httpx import AsyncClient, ASGITransport
-from pytest import fixture
-from app.mainRouter import main_router
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.database.dbHelper import db
 from os import getenv
 from typing import AsyncGenerator
-from core.database.models.user import User
-import asyncio
-import pytest
 
+import pytest
+from app.mainRouter import main_router
+from core.database.dbHelper import db
+from core.database.models.user import User
+from fastapi.testclient import TestClient
+from httpx import ASGITransport, AsyncClient
+from pytest import fixture
+from sqlalchemy.ext.asyncio import AsyncSession
 
 if getenv("TESTING") != "1":
     pytest.exit("is not in testing env")

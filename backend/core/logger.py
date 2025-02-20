@@ -1,7 +1,8 @@
 import logging
-from core.config import settings
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
+
+from core.config import settings
 
 
 def log_level_value(log_level: str) -> int:

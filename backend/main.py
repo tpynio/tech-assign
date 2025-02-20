@@ -1,8 +1,7 @@
 import uvicorn
 from app.mainRouter import main_router
-from core.logger import init_logger
 from core.config import settings
-
+from core.logger import init_logger
 
 __all__ = (
     "main_router",

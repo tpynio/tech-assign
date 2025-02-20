@@ -1,8 +1,9 @@
-from datetime import datetime
-from sqlalchemy.dialects.mysql import BINARY
-from sqlalchemy import Integer, func, UUID
-from sqlalchemy.orm import Mapped, mapped_column
 import uuid
+from datetime import datetime
+
+from sqlalchemy import UUID, Integer, func
+from sqlalchemy.dialects.mysql import BINARY
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class PlainPkId:

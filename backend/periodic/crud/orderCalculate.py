@@ -1,10 +1,10 @@
-from core.database.dbHelper import db
 from core.config import settings
-from core.logger import init_logger
+from core.database.dbHelper import db
 from core.database.models.order import Order
-from sqlalchemy import select, Result
-from sqlalchemy.exc import SQLAlchemyError
+from core.logger import init_logger
 from periodic.crud.usd import get_usd_from_redis
+from sqlalchemy import Result, select
+from sqlalchemy.exc import SQLAlchemyError
 
 log = init_logger(__name__)
 

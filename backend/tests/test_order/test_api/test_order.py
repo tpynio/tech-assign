@@ -1,15 +1,14 @@
-from app.mainRouter import main_router as app
-from fastapi import status
-from core.config import settings
-from core.database.models.user import User
-from core.database.models.order import Order, OrderTypes
-from app.routers.order.schemas.order import OrderResponse
 import uuid
 
+from app.mainRouter import main_router as app
+from app.routers.order.schemas.order import OrderResponse
+from core.config import settings
+from core.database.models.order import Order, OrderTypes
+from core.database.models.user import User
+from fastapi import status
 
-# @mock.patch("app.routers.order.crud.order.order_types", autospec=True)
+
 async def test_get_order_types(
-    # mock_order_types,
     async_client,
     async_session,
 ):

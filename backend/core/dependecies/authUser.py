@@ -1,12 +1,12 @@
-from core.logger import init_logger
+import uuid
 
-from fastapi import Depends, Request, Response, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import SQLAlchemyError
+from core.config import settings
 from core.database.dbHelper import db
 from core.database.models.user import User
-from core.config import settings
-import uuid
+from core.logger import init_logger
+from fastapi import Depends, HTTPException, Request, Response, status
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 log = init_logger(__name__)
 

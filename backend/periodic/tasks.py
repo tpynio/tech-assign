@@ -1,9 +1,10 @@
 import asyncio
-from core.logger import init_logger
+
 from celery import Celery
 from core.config import settings
-from periodic.crud.usd import saving_usd_to_redis
+from core.logger import init_logger
 from periodic.crud.orderCalculate import order_delivery_calculate
+from periodic.crud.usd import saving_usd_to_redis
 
 log = init_logger(__name__)
 

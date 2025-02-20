@@ -1,6 +1,6 @@
 from app.mainRouter import main_router as app
-from fastapi import status
 from app.routers.service.schemas.service import PingResponse
+from fastapi import status
 
 
 def test_sync_ping(client):

@@ -1,14 +1,16 @@
+from typing import Sequence
+
+from app.routers.order.schemas.order import FilterParams, RegisterOrderParams
+from core.database import Order, OrderType, User
+from core.database.models.order import OrderTypes
+from core.logger import init_logger
+from fastapi_pagination import Page
+from fastapi_pagination import Params as PaginationParams
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database import User, Order, OrderType
-from core.database.models.order import OrderTypes
-from app.routers.order.schemas.order import RegisterOrderParams, FilterParams
-from typing import Sequence
-from fastapi_pagination import Page, Params as PaginationParams
-from fastapi_pagination.ext.sqlalchemy import paginate
-from core.logger import init_logger
 
 log = init_logger(__name__)
 
