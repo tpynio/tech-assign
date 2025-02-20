@@ -1,3 +1,4 @@
-master/__pycache__
-master/.env
-master/.env.local
+backend/__pycache__
+backend/.env
+backend/.env.local
+backend/tests

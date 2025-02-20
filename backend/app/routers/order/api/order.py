@@ -41,10 +41,14 @@ async def register_order(
     db_session=Depends(db.get_session),
     user: User = Depends(get_or_make_auth_user),
 ):
-
-    # https://docs.python.org/3/howto/logging.html#optimization
     if log.isEnabledFor(logging.DEBUG):
         log.debug("register_order params %r for user %s", order_params, user.to_dict())
+    """
+    https://docs.python.org/3/howto/logging.html#optimization
+    - to_dict - достаточно жирная операция, чтобы избежать расходов при форматировании параметров лога
+    по рекомендации от logging по оптимизации добавлена проверка на соответствие уровню логирования
+    """
+
     order: Order = await crud.create_order(
         db_session=db_session,
         user=user,
@@ -52,6 +56,7 @@ async def register_order(
     )
     if log.isEnabledFor(logging.DEBUG):
         log.debug("order %s", order.to_dict())
+
     response = OrderResponse(
         order_id=order.id,
         name=order.name,
