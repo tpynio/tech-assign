@@ -21,7 +21,9 @@ class DatabaseHelper:
         max_overflow: int = 15,
         pool_size: int = 5,
     ):
-        log.info("Connecting to %s", url)
+        self.url = url
+        log.info("Connecting to %s", self.url)
+
         self.engine: AsyncEngine = create_async_engine(
             url=url,
             echo=echo,

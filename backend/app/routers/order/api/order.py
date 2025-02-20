@@ -23,6 +23,7 @@ router = APIRouter(
 
 @router.get(
     "/order_types/",
+    name="get_order_types",
     response_model=list[OrderType],
 )
 async def get_order_types(db_session=Depends(db.get_session)):
@@ -33,6 +34,7 @@ async def get_order_types(db_session=Depends(db.get_session)):
 
 @router.post(
     "/register/",
+    name="register_order",
     response_model=OrderResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -49,11 +51,15 @@ async def register_order(
     по рекомендации от logging по оптимизации добавлена проверка на соответствие уровню логирования
     """
 
-    order: Order = await crud.create_order(
+    order: Order | None = await crud.create_order(
         db_session=db_session,
         user=user,
         params=order_params,
     )
+    if not Order:
+        log.info("Can't create order")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
     if log.isEnabledFor(logging.DEBUG):
         log.debug("order %s", order.to_dict())
 
@@ -72,6 +78,8 @@ async def register_order(
 
 @router.get(
     "/list/",
+    name="get_order_list",
+    response_model=OrdersPaginateResponse,
 )
 async def get_order_list(
     pagination_params: PaginationParams = Depends(),
@@ -117,6 +125,7 @@ async def get_order_list(
 
 @router.get(
     "/{order_id}/",
+    name="get_order",
     response_model=OrderResponse,
 )
 async def get_order(

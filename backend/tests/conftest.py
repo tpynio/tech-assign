@@ -1,9 +1,20 @@
+import uuid
+
 from fastapi.testclient import TestClient
 from httpx import AsyncClient, ASGITransport
 from pytest import fixture
 from app.mainRouter import main_router
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.database.dbHelper import db
+from os import getenv
+from typing import AsyncGenerator
+from core.database.models.user import User
 import asyncio
 import pytest
+
+
+if getenv("TESTING") != "1":
+    pytest.exit("is not in testing env")
 
 # All test coroutines will be treated as marked.
 pytestmark = pytest.mark.asyncio
@@ -23,9 +34,35 @@ async def async_client() -> AsyncClient:
         yield ac
 
 
+@fixture
+async def async_session() -> AsyncSession:
+    async with db.async_session_maker() as session:
+        yield session
+
+
 @fixture(scope="session")
 def event_loop():
     policy = asyncio.get_event_loop_policy()
     loop = policy.new_event_loop()
     yield loop
     loop.close()
+
+
+@fixture
+def auth_user_session_id() -> uuid.UUID:
+    return uuid.uuid4()
+
+
+@fixture
+async def auth_user(
+    async_session: AsyncSession, auth_user_session_id
+) -> AsyncGenerator[User, None]:
+    user = User(id=auth_user_session_id.bytes)
+
+    async_session.add(user)
+    await async_session.commit()
+
+    yield user
+
+    await async_session.delete(user)
+    await async_session.commit()

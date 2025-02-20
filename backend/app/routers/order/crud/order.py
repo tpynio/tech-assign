@@ -17,8 +17,11 @@ async def create_order(
     db_session: AsyncSession,
     user: User,
     params: RegisterOrderParams,
-) -> Order:
+) -> Order | None:
     order_type = await db_session.get(OrderType, OrderTypes.index(params.type) + 1)
+    if not order_type:
+        log.error(f"There is no such order_type {params.type}")
+        return None
 
     order = Order(
         user=user,
@@ -34,6 +37,7 @@ async def create_order(
         await db_session.refresh(order)
     except SQLAlchemyError as exc:
         log.error("Database error", exc_info=exc)
+        return None
 
     return order
 
