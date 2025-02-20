@@ -1,6 +1,9 @@
 from celery import Celery
 from core.config import settings
+from core.logger import init_logger
 from periodic.tasks import update_usd_value
+
+log = init_logger(__name__)
 
 app = Celery(
     "tasks",
@@ -20,5 +23,10 @@ app.conf.beat_schedule = {
 
 
 @app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    update_usd_value()
+def initial_update_usd_value(**kwargs):
+    """
+    Запуск сверки курса доллара на старте приложения
+    :param kwargs:
+    :return:
+    """
+    update_usd_value.apply_async()
