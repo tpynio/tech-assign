@@ -13,6 +13,10 @@ redis_record_key = f"{settings.REDIS_KEY_PREFIX}-dollar"
 
 
 async def get_usd_info():
+    """
+    Получение информации о курсе доллара из ссылки
+    :return:
+    """
     url = "https://www.cbr-xml-daily.ru/daily_json.js"
 
     try:
@@ -29,6 +33,12 @@ async def get_usd_info():
 
 
 async def save_to_redis(value: str):
+    """
+    Сохранение строки в редис, с установкой TTL из конфигурации
+
+    :param value: строка для сохранения
+    :return:
+    """
     expire_in = settings.REDIS_EXPIRE
 
     redis = await redis_storage.get_pool(redis_storage.DB.CACHES)
@@ -38,6 +48,10 @@ async def save_to_redis(value: str):
 
 
 async def saving_usd_to_redis():
+    """
+    Получение словарика про доллар и сохранение курса доллара как одно значение(строка) в редис
+    :return:
+    """
     usd_info: Dict | None = await get_usd_info()
     if usd_info:
         value = usd_info.get("Value")
@@ -46,7 +60,11 @@ async def saving_usd_to_redis():
     return usd_info
 
 
-async def get_usd_from_redis():
+async def get_usd_from_redis() -> str:
+    """
+    Получение значение курса доллара из redis
+    :return:
+    """
     redis = await redis_storage.get_pool(redis_storage.DB.CACHES)
     lock = await redis_storage.get_lock(lock_key)
     async with lock:

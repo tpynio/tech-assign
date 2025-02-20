@@ -17,6 +17,8 @@ router = APIRouter(
 @router.post(
     "/force_cache_usd_data/",
     response_model=CachedUSDData,
+    description="Отладочный ентрипойнт. Форсировать сохранение значения курса доллара к рублю. "
+    "По умолчанию, это происходит в отдельном периодическом процессе",
 )
 async def force_cache_usd_data():
     usd_data = await saving_usd_to_redis()
@@ -30,6 +32,7 @@ async def force_cache_usd_data():
 @router.get(
     "/get_cached_usd_data/",
     response_model=CachedUSDValue,
+    description="Отладочный ентрипойнт. Получение сохраненного периодической задачей значения курса доллара к рублю. ",
 )
 async def get_cached_usd_data():
     usd_value = await get_usd_from_redis()
@@ -40,6 +43,8 @@ async def get_cached_usd_data():
 @router.post(
     "/force_delivery_recalculate/",
     response_model=ForceRecalculate,
+    description="Отладочный ентрипойнт. Форсированный запуск процесса перерасчета. "
+    "По умолчанию, это происходит в отдельном периодическом процессе",
 )
 async def force_delivery_recalculate():
     await order_delivery_calculate()

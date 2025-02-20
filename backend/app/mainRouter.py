@@ -33,6 +33,7 @@ main_router = FastAPI(
     "/ping/",
     tags=["Service"],
     response_model=PingResponse,
+    description="Служебный ентрипойнт. Может пригодиться для проверки здоровья приложения(запущено/нет)",
 )
 async def ping():
     return {"message": "pong"}

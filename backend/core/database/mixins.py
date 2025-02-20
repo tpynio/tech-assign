@@ -11,6 +11,11 @@ class PlainPkId:
 
 
 class UUIDPkId:
+    """
+    MySQL позволяет хранить UUID в виде BINARY(16), что хорошо для индексации такого ключа,
+    лучше и должно быть сильно быстрее чем работа с UUID в сиде строку
+    """
+
     id: Mapped[UUID] = mapped_column(
         BINARY(16), primary_key=True, default=lambda: uuid.uuid4().bytes
     )

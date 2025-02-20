@@ -10,6 +10,10 @@ log = init_logger(__name__)
 
 
 async def order_delivery_calculate():
+    """
+    Перерасчет стоимостей посылки
+    :return:
+    """
     data_is_here: bool = True
     batch_size = settings.BATCH_SIZE
     value: str | None = await get_usd_from_redis()
@@ -24,6 +28,15 @@ async def order_delivery_calculate():
         log.error("USD-data wrong format %s", value, exc_info=exc)
         return
 
+    """
+    Идет пачкам по BATCH_SIZE штук, чтобы нивелировать возможные проблемы с базой, было бы грустно поменять
+    100500 записей значение, и упасть на 100501.
+    Поскольку данные в базе хранятся в виде интов, так и базе лучше, и сама база меньше.
+    - Значения веса переведено в кг
+    - Значение рубля в копейки
+    - Значение доллара в центы
+    Поэтому формула слегка модифицировалась
+    """
     while data_is_here:
         query = select(Order).where(Order.delivery_price.is_(None)).limit(batch_size)
         async with db.async_session_maker() as session:

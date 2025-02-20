@@ -6,6 +6,10 @@
 ```shell
 docker-compose up --build -d
 ```
+После запуска доступен сваггер нa localhost
+
+http://0.0.0.0:8000/docs
+
 ## Структура проекта
 
 ```shell
@@ -49,6 +53,7 @@ docker-compose up --build -d
       |-tasks.py // набор Celery тасков
       |-celeryneat_schedule.py // планировщик celeryneat_schedule
       |-crud // набор фукнций необходимый для работы периодических задач
+   |-tests //тесты
 ```
 
 ## Разработка
@@ -72,8 +77,13 @@ pre-commit install
 6. .....
 7. Прогоняем линтерами по наколбашенному (при необходимости)
 ```shell
+isort .
+```
+```shell
 pre-commit run --all-files
 ```
+PS. По какойто непонятной причине подружить isort(--profile black) и black в pre-commit-хуке [не получилось](https://pycqa.github.io/isort/docs/configuration/black_compatibility.html), как не пытался - они все время сортируют по своему импорты, но можно вручную запускать isort, затем precommit
+
 ## Unit-тестирование
 
 1. В PyCharm из контекстного меню выбираем запуск тестов на дирректории backend/tests. Но тесты на первом запуске не пройдут, сначала, нужно обойти защиту от случайного нажатия

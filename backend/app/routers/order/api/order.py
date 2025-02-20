@@ -24,6 +24,7 @@ router = APIRouter(
 @router.get(
     "/order_types/",
     name="get_order_types",
+    description="Получение списка доступных для посылки типов посылок",
     response_model=list[OrderType],
 )
 async def get_order_types(db_session=Depends(db.get_session)):
@@ -37,6 +38,7 @@ async def get_order_types(db_session=Depends(db.get_session)):
     name="register_order",
     response_model=OrderResponse,
     status_code=status.HTTP_201_CREATED,
+    description="Регистрации посылки. При вызове метода, если пользователя нет в системе - он создается",
 )
 async def register_order(
     order_params: RegisterOrderParams,
@@ -80,6 +82,8 @@ async def register_order(
     "/list/",
     name="get_order_list",
     response_model=OrdersPaginateResponse,
+    description="Получение списка посылок пользователя."
+    " При вызове метода, если пользователя нет в системе - он создается",
 )
 async def get_order_list(
     pagination_params: PaginationParams = Depends(),
@@ -127,6 +131,7 @@ async def get_order_list(
     "/{order_id}/",
     name="get_order",
     response_model=OrderResponse,
+    description="Получение посылки пользователя. При вызове метода, если пользователя нет в системе - он создается",
 )
 async def get_order(
     order_id: int,
