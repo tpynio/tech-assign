@@ -6,6 +6,7 @@ from typing import AsyncGenerator
 import pytest
 from app.mainRouter import main_router
 from core.database.dbHelper import db
+from core.database.models.order import Order, OrderType, OrderTypes
 from core.database.models.user import User
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
@@ -65,3 +66,45 @@ async def auth_user(
 
     await async_session.delete(user)
     await async_session.commit()
+
+
+@fixture
+async def order_dummies_factory(auth_user, async_session):
+    class Factory:
+        orders = []
+
+        async def make_dummies(
+            self,
+            name: str,
+            price: int,
+            weight: int,
+            delivery_price: int | None,
+            order_type: OrderTypes,
+            deliver_id: int = 0,
+        ):
+            order_type = await async_session.get(
+                OrderType, OrderTypes.index(order_type) + 1
+            )
+            order = Order(
+                name=name,
+                price=price,
+                weight=weight,
+                order_type=order_type,
+                user=auth_user,
+                delivery_price=delivery_price,
+                deliver_id=deliver_id,
+            )
+            async_session.add(order)
+            await async_session.commit()
+            self.orders.append(order)
+
+            return order
+
+        async def destroy_dummies(self):
+            for order in self.orders:
+                await async_session.delete(order)
+            await async_session.commit()
+
+    factory = Factory()
+    yield factory
+    await factory.destroy_dummies()
