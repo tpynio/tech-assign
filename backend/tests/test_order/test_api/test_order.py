@@ -192,7 +192,7 @@ class TestOrderList:
         response = await async_client.get(
             url=url,
             cookies={settings.COOKIE_SESSION_ID_KEY_NAME: str(session_id)},
-            params=filter_params.dict(),
+            params=filter_params.model_dump(),
         )
         assert response.status_code == status.HTTP_200_OK, response.text
         json_response = response.json()
