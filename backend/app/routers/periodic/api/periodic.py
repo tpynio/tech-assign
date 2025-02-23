@@ -4,9 +4,9 @@ from app.routers.periodic.schemas.periodic import (
     ForceRecalculate,
 )
 from core.logger import init_logger
-from fastapi import APIRouter, HTTPException, status
-from periodic.crud.orderCalculate import order_delivery_calculate
-from periodic.crud.usd import get_usd_from_redis, saving_usd_to_redis
+from fastapi import APIRouter
+from periodic.crud.usd import get_usd_from_redis
+from periodic.tasks import update_delivery_price, update_usd_value
 
 log = init_logger(__name__)
 router = APIRouter(
@@ -21,12 +21,8 @@ router = APIRouter(
     "По умолчанию, это происходит в отдельном периодическом процессе",
 )
 async def force_cache_usd_data():
-    usd_data = await saving_usd_to_redis()
-    if not usd_data:
-        log.error("Can't get usd-data")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    return usd_data
+    update_usd_value.apply_async()
+    return {"status": "success"}
 
 
 @router.get(
@@ -47,6 +43,6 @@ async def get_cached_usd_data():
     "По умолчанию, это происходит в отдельном периодическом процессе",
 )
 async def force_delivery_recalculate():
-    await order_delivery_calculate()
+    update_delivery_price.apply_async()
 
     return {"status": "success"}
