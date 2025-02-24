@@ -1,4 +1,4 @@
-from app.mainRouter import main_router as app
+from app.main_router import main_router as app
 from app.routers.service.schemas.service import PingResponse
 from fastapi import status
 

@@ -1,5 +1,5 @@
 from aioresponses import aioresponses
-from core.database.redisHelper import redis_storage
+from core.database.redis_helper import redis_storage
 from periodic.crud.usd import get_usd_from_redis, saving_usd_to_redis
 
 

@@ -1,6 +1,6 @@
 import asyncio
 
-from app.mainRouter import main_router as app
+from app.main_router import main_router as app
 from app.routers.binding.schemas.binding import BindingOrderParams, BindingOrderResponse
 from fastapi import status
 

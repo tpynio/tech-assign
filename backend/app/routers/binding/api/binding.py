@@ -1,6 +1,6 @@
 from app.routers.binding.crud.binding import binding_free_order
 from app.routers.binding.schemas.binding import BindingOrderParams, BindingOrderResponse
-from core.database.dbHelper import db
+from core.database.db_helper import db
 from core.logger import init_logger
 from fastapi import APIRouter, Depends
 

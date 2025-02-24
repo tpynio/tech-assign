@@ -1,8 +1,4 @@
-from app.routers.periodic.schemas.periodic import (
-    CachedUSDData,
-    CachedUSDValue,
-    ForceRecalculate,
-)
+from app.routers.periodic.schemas.periodic import CachedUSDValue, ForcePeriodicTask
 from core.logger import init_logger
 from fastapi import APIRouter
 from periodic.crud.usd import get_usd_from_redis
@@ -16,7 +12,7 @@ router = APIRouter(
 
 @router.post(
     "/force_cache_usd_data/",
-    response_model=CachedUSDData,
+    response_model=ForcePeriodicTask,
     description="Отладочный ентрипойнт. Форсировать сохранение значения курса доллара к рублю. "
     "По умолчанию, это происходит в отдельном периодическом процессе",
 )
@@ -38,7 +34,7 @@ async def get_cached_usd_data():
 
 @router.post(
     "/force_delivery_recalculate/",
-    response_model=ForceRecalculate,
+    response_model=ForcePeriodicTask,
     description="Отладочный ентрипойнт. Форсированный запуск процесса перерасчета. "
     "По умолчанию, это происходит в отдельном периодическом процессе",
 )

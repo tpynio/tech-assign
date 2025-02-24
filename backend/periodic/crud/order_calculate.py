@@ -1,5 +1,5 @@
 from core.config import settings
-from core.database.dbHelper import db
+from core.database.db_helper import db
 from core.database.models.order import Order
 from core.logger import init_logger
 from periodic.crud.usd import get_usd_from_redis

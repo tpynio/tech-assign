@@ -58,8 +58,12 @@ class OrderResponse(Order):
 
 
 class OrderType(BaseModel):
-    id: int
-    name: str
+    id: int = Field(..., description="id типа заказа")
+    name: str = Field(
+        ...,
+        description="наименование типа заказа",
+        examples=["Clothes", "Electronics", "Misc"],
+    )
 
 
 class OrdersPaginateResponse(Page):

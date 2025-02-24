@@ -6,7 +6,7 @@ from app.routers.order.api.order import router as order_router
 from app.routers.periodic.api.periodic import router as periodic_router
 from app.routers.service.schemas.service import PingResponse
 from core.config import settings
-from core.database.dbHelper import db
+from core.database.db_helper import db
 from core.logger import init_logger
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse

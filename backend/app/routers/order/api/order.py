@@ -9,8 +9,8 @@ from app.routers.order.schemas.order import (
     RegisterOrderParams,
 )
 from core.database import Order, User
-from core.database.dbHelper import db
-from core.dependecies.authUser import get_or_make_auth_user
+from core.database.db_helper import db
+from core.dependecies.auth_user import get_or_make_auth_user
 from core.logger import init_logger
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination import Params as PaginationParams

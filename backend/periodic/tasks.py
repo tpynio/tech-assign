@@ -4,7 +4,7 @@ from time import time
 from celery import Celery, signals
 from core.config import settings
 from core.logger import init_logger
-from periodic.crud.orderCalculate import order_delivery_calculate
+from periodic.crud.order_calculate import order_delivery_calculate
 from periodic.crud.usd import saving_usd_to_redis
 
 log = init_logger(__name__)

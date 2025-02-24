@@ -1,7 +1,7 @@
 import random
 import uuid
 
-from app.mainRouter import main_router as app
+from app.main_router import main_router as app
 from app.routers.order.schemas.order import FilterParams, OrderResponse
 from core.config import settings
 from core.database.models.order import Order, OrderTypes

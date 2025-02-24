@@ -1,7 +1,7 @@
 import uuid
 
 from core.config import settings
-from core.database.dbHelper import db
+from core.database.db_helper import db
 from core.database.models.user import User
 from core.logger import init_logger
 from fastapi import Depends, HTTPException, Request, Response, status

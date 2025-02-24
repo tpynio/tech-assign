@@ -1,8 +1,8 @@
 from typing import Dict
 
-import aiohttp
+from aiohttp import ClientError, ClientSession
 from core.config import settings
-from core.database.redisHelper import redis_storage
+from core.database.redis_helper import redis_storage
 from core.logger import init_logger
 
 log = init_logger(__name__)
@@ -20,14 +20,14 @@ async def get_usd_info():
     url = "https://www.cbr-xml-daily.ru/daily_json.js"
 
     try:
-        async with aiohttp.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.get(url) as response:
                 response.raise_for_status()
                 data: Dict = await response.json(content_type=None)
                 usd_info = data["Valute"]["USD"]
                 log.info("USD data is %r", usd_info)
                 return usd_info
-    except Exception as exc:
+    except (ClientError, KeyError) as exc:
         log.error("Can't connect to cbr-xml-daily", exc_info=exc)
         return None
 

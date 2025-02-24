@@ -4,8 +4,8 @@ from os import getenv
 from typing import AsyncGenerator
 
 import pytest
-from app.mainRouter import main_router
-from core.database.dbHelper import db
+from app.main_router import main_router
+from core.database.db_helper import db
 from core.database.models.order import Order, OrderType, OrderTypes
 from core.database.models.user import User
 from fastapi.testclient import TestClient
